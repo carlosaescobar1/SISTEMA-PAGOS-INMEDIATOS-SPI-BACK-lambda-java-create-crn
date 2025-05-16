@@ -20,7 +20,7 @@ public enum ConstantsEnum {
     /**
      * Comentario mostrado al nombre del Vault
      */
-    VAULT_NAME("REDEBAN"),
+    VAULT_NAME("CORNER"),
 
     CEL("2"),
 
@@ -32,9 +32,9 @@ public enum ConstantsEnum {
 
     PN("PN"),
 
-    REDEBAN("REDEBAN"),
+    CORNER("CORNER"),
 
-    REDEBAN_PERSON("REDEBAN_PERSON"),
+    CORNER_PERSON("CORNER_PERSON"),
 
     /**
      * Comentario mostrado al presentarse un error en el metodo de guardado opensearch

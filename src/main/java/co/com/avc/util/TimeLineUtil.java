@@ -1,6 +1,5 @@
 package co.com.avc.util;
 
-import co.com.avc.cornerconn.models.enrollment.EnrollmentRq;
 import co.com.avc.mapper.IndexTimeLineMapper;
 import co.com.ath.opensearch.logs.constants.ActionConstants;
 import co.com.ath.opensearch.logs.constants.TimeStampEnum;

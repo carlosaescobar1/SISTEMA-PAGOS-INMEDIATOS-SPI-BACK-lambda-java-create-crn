@@ -6,7 +6,7 @@ plugins {
 }
 
 version = "1.0"
-group = "co.com.ath"
+group = "co.com.avc"
 
 repositories {
     mavenCentral()
@@ -38,6 +38,7 @@ dependencies {
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.12.389")
+    implementation 'software.amazon.awssdk:sqs:2.25.32'
 
     //MAP
     implementation 'org.mapstruct:mapstruct:1.6.0'
@@ -73,7 +74,7 @@ dependencies {
 
 
 application {
-    mainClass = "co.com.ath.LambdaHandlerRuntime"
+    mainClass = "co.com.avc.LambdaHandlerRuntime"
 }
 java {
     toolchain {
@@ -91,7 +92,7 @@ micronaut {
     testRuntime("junit5")
     processing {
         incremental(true)
-        annotations("co.com.ath.*")
+        annotations("co.com.avc.*")
     }
     aot {
         // Please review carefully the optimizations enabled below

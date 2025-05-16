@@ -20,6 +20,15 @@ public enum ResponseStatusCodeEnum {
      */
     ENTERPRISE_SUCCESS_STATUS_CODE(200),
 
+    /**
+     * Código de respuesta fallida para el servicio de creación de persona.
+     */
+    PERSON_FAILED_STATUS_CODE(400),
+    /**
+     * Código de respuesta fallida para el servicio de creación de comercio.
+     */
+    ENTERPRISE_FAILED_STATUS_CODE(400),
+
 
     ;
 

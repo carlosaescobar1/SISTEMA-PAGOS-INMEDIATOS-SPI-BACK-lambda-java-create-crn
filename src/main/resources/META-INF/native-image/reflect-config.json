@@ -1,0 +1,28 @@
+[
+  {
+    "name": "co.com.avc.models.SqsDto",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "co.com.avc.models.MessageDto",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicConstructors": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "co.com.avc.models.MessageDtoBatch",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicConstructors": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "co.com.avc.models.MessageDtoDynamo",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicConstructors": true,
+    "allPublicFields": true
+  }
+]

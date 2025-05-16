@@ -5,9 +5,13 @@
  */
 package co.com.avc;
 
+import co.com.avc.models.MessageDto;
+import co.com.avc.models.SqsDto;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.function.aws.runtime.AbstractMicronautLambdaRuntime;
+import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +41,9 @@ import java.net.MalformedURLException;
  * @version 1.0
  * @since 1.0
  */
+@SerdeImport(SqsDto.class)
+@SerdeImport(MessageDto.class)
+@Introspected(classes = { SqsDto.class, MessageDto.class })
 @Slf4j
 public class LambdaHandlerRuntime extends AbstractMicronautLambdaRuntime<SQSEvent, Void, SQSEvent, Void> {
 

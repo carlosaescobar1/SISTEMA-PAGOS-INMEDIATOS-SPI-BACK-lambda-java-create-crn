@@ -4,6 +4,7 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.SerdeImport;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * ParameterStoreDto
@@ -27,6 +28,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Introspected
+@ToString(exclude = {
+        "arnSnsOpenSearch",
+        "arnSecretOpenSearch",
+        "paramActiveVault",
+        "paramFlowConfig", // opcional, si luego decides que contiene info sensible
+        "paramDynamo"      // opcional, si contiene endpoints o datos internos
+})
 @SerdeImport(ParameterStoreDto.class)
 public class ParameterStoreDto {
 
@@ -39,8 +47,6 @@ public class ParameterStoreDto {
     private ParamDynamo paramDynamo;
 
     private ParamActiveVault paramActiveVault;
-
-    private RedebanConfigDto redebanConfigDto;
 
     private String region;
 

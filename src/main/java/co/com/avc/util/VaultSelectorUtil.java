@@ -16,7 +16,7 @@ public class VaultSelectorUtil {
     public ParamVaultUpload selectorVault() {
 
         ParamVaultUpload paramVaultUpload = paramActiveVault.getVaultsUpload().stream()
-                .filter(data -> data.getVaultName().equalsIgnoreCase(ConstantsEnum.REDEBAN_PERSON.getValue()))
+                .filter(data -> data.getVaultName().equalsIgnoreCase(ConstantsEnum.CORNER_PERSON.getValue()))
                 .findFirst().orElse(null);
  
         return paramVaultUpload;

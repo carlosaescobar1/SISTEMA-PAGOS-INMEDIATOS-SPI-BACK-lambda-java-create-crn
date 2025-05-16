@@ -4,7 +4,7 @@ import co.com.ath.commons.util.ATHException;
 import co.com.ath.commons.util.Util;
 import co.com.ath.commons.util.constants.MessagesEnum;
 import co.com.avc.constants.ConstantsEnum;
-import co.com.avc.constants.ResponseCodeEnum;
+import co.com.avc.constants.ResponseStatusCodeEnum;
 import co.com.avc.mapper.IndexBatchMapper;
 import co.com.avc.mapper.IndexRejectedMapper;
 import co.com.avc.models.MessageDto;
@@ -35,7 +35,6 @@ public class UpdateOpenSearchServiceImpl implements IUpdateOpenSearchService{
     private final OpenSearchClient openSearchClient;
 
     private final ObjectMapper objectMapper = ApplicationContext.run().getBean(ObjectMapper.class);
-    ;
 
     private final StringWriter errors = new StringWriter();
 
@@ -262,8 +261,8 @@ public class UpdateOpenSearchServiceImpl implements IUpdateOpenSearchService{
 
         OSIndexBatch osIndexBatch = indexBatchMapper.mapEnrollmentRqToIndexBatch(dynamoSpiDto, rqId, ActionConstants.EVENT_BATCH_ENROLL.getValue(), fileName);
 
-        if (errorType.equals(ResponseCodeEnum.RED_PERSON_ERROR_CREATED_STATUS_CODE.getValue())
-                || errorType.equals(ResponseCodeEnum.RED_PERSON_ERROR_BODY_STATUS_CODE.getValue())) {
+        if (Integer.parseInt(errorType) == (ResponseStatusCodeEnum.PERSON_FAILED_STATUS_CODE.getValue())
+                || (Integer.parseInt(errorType) == (ResponseStatusCodeEnum.ENTERPRISE_FAILED_STATUS_CODE.getValue()))) {
 
             log.info("ENTRO A INDICE DE RECHAZADOS");
             saveIndexRejected(dynamoSpiDto, fileName, errorType, errorDesc, rqId, osIndexBatch.getRqId());
@@ -350,7 +349,10 @@ public class UpdateOpenSearchServiceImpl implements IUpdateOpenSearchService{
                                         String rqId,
                                         String rqUUID) {
 
+        log.info("MessageDto Recibido:  {}", messageDto);
+
         DynamoSpiDto dynamoSpiDto = getDynamoSpiDto(messageDto);
+        log.info("DynamoSpiDto generado:  {}", dynamoSpiDto);
 
         OSIndexBatch osIndexBatch = indexBatchMapper.mapEnrollmentRqToIndexBatch(dynamoSpiDto,
                 rqUUID,
@@ -373,12 +375,28 @@ public class UpdateOpenSearchServiceImpl implements IUpdateOpenSearchService{
     }
 
     private DynamoSpiDto getDynamoSpiDto(MessageDto messageDto) {
+        log.info("MessageDto Recibido: {}", messageDto);
 
-        return messageDto.getMessageDtoBatch() != null ?
-                (DynamoSpiDto) Util.string2object(
-                        messageDto.getMessageDtoBatch().getOsIndexBatch().getRqServiceObject(),
-                        DynamoSpiDto.class) :
-                messageDto.getMessageDtoDynamo().getDynamoSpiDto();
+        if (messageDto.getMessageDtoBatch() != null &&
+                messageDto.getMessageDtoBatch().getOsIndexBatch() != null &&
+                messageDto.getMessageDtoBatch().getOsIndexBatch().getRqServiceObject() != null) {
 
+            return (DynamoSpiDto) Util.string2object(
+                    messageDto.getMessageDtoBatch().getOsIndexBatch().getRqServiceObject(),
+                    DynamoSpiDto.class);
+        }
+
+        if (messageDto.getMessageDtoDynamo() != null &&
+                messageDto.getMessageDtoDynamo().getDynamoSpiDto() != null) {
+
+            return messageDto.getMessageDtoDynamo().getDynamoSpiDto();
+        }
+
+        log.warn("No se pudo obtener un DynamoSpiDto válido desde el MessageDto");
+        throw new ATHException(
+                MessagesEnum.DEFAULT_ERROR_RESPONSE.getCode(),
+                "No se encontró un DynamoSpiDto válido en el mensaje",
+                MessagesEnum.DEFAULT_ERROR_RESPONSE.getHttpCode()
+        );
     }
 }

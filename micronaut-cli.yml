@@ -1,6 +1,10 @@
 applicationType: default
-defaultPackage: co.com.ath
+defaultPackage: co.com.avc
 testFramework: junit
 sourceLanguage: java
 buildTool: gradle
 features: [app-name, aws-lambda, aws-lambda-events-serde, aws-lambda-handler-default, graalvm, gradle, http-client-jdk, http-client-test, java, java-application, junit, logback, micronaut-aot, micronaut-build, micronaut-http-validation, properties, readme, serialization-jackson, shade, static-resources, x86]
+
+micronaut:
+  aot:
+    enabled: true

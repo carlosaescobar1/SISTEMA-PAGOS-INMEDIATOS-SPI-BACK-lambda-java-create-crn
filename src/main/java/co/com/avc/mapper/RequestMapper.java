@@ -1,7 +1,9 @@
 package co.com.avc.mapper;
 
+import co.com.ath.commons.util.ATHException;
 import co.com.ath.commons.util.Util;
 import co.com.avc.constants.ConstantsEnum;
+import co.com.avc.constants.ResponseServiceEnum;
 import co.com.avc.models.MessageDto;
 import co.com.avc.models.MessageDtoBatch;
 import co.com.avc.models.MessageDtoDynamo;
@@ -29,21 +31,36 @@ public class RequestMapper {
      * @return
      */
     public MessageDto messageDtoMapper(SqsDto sqsDto) {
-        MessageDto messageDto = new MessageDto();
-        if (sqsDto.getSubject().equalsIgnoreCase(ConstantsEnum.SUBJECT_BATCH.getValue())) {
-            log.info("messageDtoMapper ingreso if sonda");
-            MessageDtoBatch messageDtoBatch = (MessageDtoBatch) Util.string2objectWhitNulls(sqsDto.getMessage(), MessageDtoBatch.class);
-            messageDto.setMessageDtoBatch(messageDtoBatch);
-        } else if (sqsDto.getSubject().contains(ConstantsEnum.SUBJECT_MIGRATION.getValue())) {
-            log.info("messageDtoMapper ingreso if migración");
-            MessageDtoDynamo messageDtoDynamo = new MessageDtoDynamo();
-            messageDtoDynamo.setFileName(sqsDto.getSubject());
-            DynamoSpiDto dynamoSpiDto1 = (DynamoSpiDto) Util.string2objectWhitNulls(sqsDto.getMessage(), DynamoSpiDto.class);
-            messageDtoDynamo.setDynamoSpiDto(dynamoSpiDto1);
-            messageDto.setMessageDtoDynamo(messageDtoDynamo);
+        try {
+            MessageDto messageDto = new MessageDto();
+            log.info("SQS DTO: {}", sqsDto.toString());
+            if (sqsDto.getSubject() != null && sqsDto.getSubject().equalsIgnoreCase(ConstantsEnum.SUBJECT_BATCH.getValue())) {
+                log.info("messageDtoMapper ingreso if sonda");
+                log.info("Message recibido: {}", sqsDto.getMessage());
+                Object result = Util.string2objectWhitNulls(sqsDto.getMessage(), MessageDtoBatch.class);
+                log.info("result: {}", result.toString());
+                if (result instanceof MessageDtoBatch) {
+                    MessageDtoBatch messageDtoBatch = (MessageDtoBatch) result;
+                    messageDto.setMessageDtoBatch(messageDtoBatch);
+                }
+            } else if (sqsDto.getSubject() != null && sqsDto.getSubject().contains(ConstantsEnum.SUBJECT_MIGRATION.getValue())) {
+                log.info("messageDtoMapper ingreso if migración");
+                MessageDtoDynamo messageDtoDynamo = new MessageDtoDynamo();
+                messageDtoDynamo.setFileName(sqsDto.getSubject());
+                Object result = Util.string2objectWhitNulls(sqsDto.getMessage(), DynamoSpiDto.class);
+                if (result instanceof DynamoSpiDto) {
+                    DynamoSpiDto dynamoSpiDto1 = (DynamoSpiDto) result;
+                    messageDtoDynamo.setDynamoSpiDto(dynamoSpiDto1);
+                }
+                messageDto.setMessageDtoDynamo(messageDtoDynamo);
+            }
+            log.info("messageDtoMapper MessageRecibido: {}", messageDto.toString());
+            return messageDto;
+        } catch (NullPointerException e) {
+            throw new ATHException(ResponseServiceEnum.ERROR_TEC_EXCEPTION.getServerStatusCode(),
+                    ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusDesc(), ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusCode());
         }
-        log.info("messageDtoMapper: {}", Util.object2StringWithNulls(messageDto));
-        return messageDto;
+
     }
 
     public DynamoSpiDto redirectDynamoData(MessageDto messageDto, String subject, String dateOperation) {
@@ -55,7 +72,7 @@ public class RequestMapper {
         } else {
             dynamoSpiDto = messageDto.getMessageDtoDynamo().getDynamoSpiDto();
         }
-        dynamoSpiDto.setVaultNameRec(ConstantsEnum.REDEBAN.getValue());
+        dynamoSpiDto.setVaultNameRec(ConstantsEnum.CORNER.getValue());
         dynamoSpiDto.setEffDtCreate(dateOperation);
 
         log.info("redirectDynamoData: " + Util.object2StringWithNulls(dynamoSpiDto));
@@ -63,7 +80,7 @@ public class RequestMapper {
         return dynamoSpiDto;
     }
 
-    public EnrollmentRq bodyMapper(DynamoSpiDto dynamoSpiDto){
+    public EnrollmentRq bodyMapper(DynamoSpiDto dynamoSpiDto) {
         enrollmentRq.setPerson(getPerson(dynamoSpiDto));
         enrollmentRq.setKey(getKey(dynamoSpiDto));
         enrollmentRq.setPaymentMethod(getPaymentMehtod(dynamoSpiDto));
@@ -73,7 +90,7 @@ public class RequestMapper {
     }
 
 
-    private Person getPerson(DynamoSpiDto dynamoSpiDto){
+    private Person getPerson(DynamoSpiDto dynamoSpiDto) {
         Person person = new Person();
         person.setFirstName(dynamoSpiDto.getCustInf().getCustFirstName());
         person.setSecondName(dynamoSpiDto.getCustInf().getCustSecondName());
@@ -88,7 +105,7 @@ public class RequestMapper {
         return person;
     }
 
-    private PaymentMethod getPaymentMehtod(DynamoSpiDto dynamoSpiDto){
+    private PaymentMethod getPaymentMehtod(DynamoSpiDto dynamoSpiDto) {
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setTypePaymentAcc(dynamoSpiDto.getAcctInfo().getAcctType());
         paymentMethod.setAccountNumber(dynamoSpiDto.getAcctInfo().getAcctId());
@@ -96,7 +113,7 @@ public class RequestMapper {
         return paymentMethod;
     }
 
-    private Key  getKey(DynamoSpiDto dynamoSpiDto){
+    private Key getKey(DynamoSpiDto dynamoSpiDto) {
         Key key = new Key();
         key.setKeyType(dynamoSpiDto.getAcctInfo().getAcctType());
         key.setValueKey(dynamoSpiDto.getAcctInfo().getAcctId());

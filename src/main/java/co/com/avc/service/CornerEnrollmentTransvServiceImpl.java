@@ -87,7 +87,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
 
     /**
      * Método encargado de realizar el consumo
-     * a la camara de redeban
+     * a la camara de corner
      *
      * @param messageDto
      * @param subject
@@ -128,13 +128,13 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                     //envio de mensaje dto para batch
                     updateOpenSearchService.processSuccessBatchAction(messageDto);
                 } else if (ConstantsEnum.S.getValue().equalsIgnoreCase(consent) && effDtConsent != null && !effDtConsent.isEmpty()) {
-                    log.info("Consentimiento es S, conexion con redeban");
+                    log.info("Consentimiento es S, conexion con corner");
 
                     httpResponseWrapper = redEnrollmentService
                             .enrollmentKeyService(
                                     enrollmentRq,
                                     paramVaultUpload.getUrlEnrollmentVault(),
-                                    vaultServicesTimeOut.getRedEnrollmentTimeOut());
+                                    vaultServicesTimeOut.getCornerEnrollmentTimeOut());
 
                     log.info("HttpResponseWrapper: {}", Util.object2String(httpResponseWrapper));
 
@@ -196,9 +196,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
     ) {
 
         if (httpStatusCode == ResponseStatusCodeEnum.PERSON_SUCCESS_STATUS_CODE.getValue()
-                && "NT00".equalsIgnoreCase(ResponseCodeEnum.RED_PERSON_SUCCESS_STATUS_CODE.getValue())
-                || (httpStatusCode == ResponseStatusCodeEnum.PERSON_CREATED_STATUS_CODE.getValue()
-                && "U000".equalsIgnoreCase(ResponseCodeEnum.RED_PERSON_CREATED_STATUS_CODE.getValue()))
+                || (httpStatusCode == ResponseStatusCodeEnum.PERSON_CREATED_STATUS_CODE.getValue())
         ) {
 
             updateOpenSearchService.processSuccessBatchAction(messageDto);
@@ -225,9 +223,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
     ) {
 
         if (httpStatusCode == ResponseStatusCodeEnum.PERSON_SUCCESS_STATUS_CODE.getValue()
-                && "NT00".equalsIgnoreCase(ResponseCodeEnum.RED_PERSON_SUCCESS_STATUS_CODE.getValue())
-                || (httpStatusCode == ResponseStatusCodeEnum.PERSON_CREATED_STATUS_CODE.getValue()
-                && "U000".equalsIgnoreCase(ResponseCodeEnum.RED_PERSON_CREATED_STATUS_CODE.getValue()))
+                || (httpStatusCode == ResponseStatusCodeEnum.PERSON_CREATED_STATUS_CODE.getValue())
         ) {
 
             log.info("Respuesta del servicio exitosa: {}", Util.object2String(msgInformationResponse));
@@ -269,8 +265,8 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
             updateOpenSearchService.processOpensearchAction(messageDto,
                     dynamoSpiDto,
                     fileName,
-                    "",
-                    "",
+                    ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusCode().toString(),
+                    ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusDesc(),
                     rqId,
                     subject);
 

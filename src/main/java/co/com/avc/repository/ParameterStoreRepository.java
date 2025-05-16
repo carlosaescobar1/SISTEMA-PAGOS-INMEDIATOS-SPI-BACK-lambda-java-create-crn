@@ -2,12 +2,9 @@ package co.com.avc.repository;
 
 import co.com.ath.commons.util.ParameterStoreUtil;
 import co.com.ath.commons.util.Util;
-import co.com.avc.constants.ConstantsEnum;
 import co.com.avc.constants.ParameterStoreEnum;
 import co.com.avc.models.parameter.*;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
@@ -50,11 +47,16 @@ public class ParameterStoreRepository {
      */
     public ParameterStoreDto getParameters() {
         ParameterStoreDto parameterStoreDto = new ParameterStoreDto();
+        log.info("Inicia consulta de parámetros");
 
         try {
-            log.info("Inicia consulta parametros");
             Map<String, String> generalParameter = ParameterStoreUtil
                     .getParameters(ParameterStoreEnum.PARAMETER_GENERAL_PATH_URL.getValue());
+
+            if (generalParameter == null || generalParameter.isEmpty()) {
+                log.error("No se encontraron parámetros en el Parameter Store");
+                return parameterStoreDto;
+            }
 
             parameterStoreDto.setArnSnsOpenSearch((ArnSnsOpenSearch)
                     Util.string2object(generalParameter.get(ParameterStoreEnum.PARAM_ARN_SNS_LOGS_OPEN_SEARCH.getValue()),
@@ -76,12 +78,8 @@ public class ParameterStoreRepository {
                     Util.string2object(generalParameter.get(ParameterStoreEnum.PARAM_FLOW_CONFIG.getValue()),
                             ParamFlowConfig.class));
 
-            parameterStoreDto.setRedebanConfigDto((RedebanConfigDto)
-                    Util.string2object(generalParameter.get(ParameterStoreEnum.PARAM_REDEBAN_CONFIG.getValue()),
-                            RedebanConfigDto.class));
-
-            parameterStoreDto.setMaxRetryBatch(Integer.parseInt(generalParameter
-                    .get(ParameterStoreEnum.PARAM_MAX_RETRY_BATCH.getValue())));
+            String maxRetryBatch = generalParameter.get(ParameterStoreEnum.PARAM_MAX_RETRY_BATCH.getValue());
+            parameterStoreDto.setMaxRetryBatch(maxRetryBatch != null ? Integer.parseInt(maxRetryBatch) : 0);
 
             parameterStoreDto.setRegion(generalParameter.get(ParameterStoreEnum.PARAM_REGION.getValue()));
 
@@ -89,15 +87,22 @@ public class ParameterStoreRepository {
                     Util.string2object(generalParameter.get(ParameterStoreEnum.PARAM_JSON_VAULT.getValue()),
                             ParamActiveVault.class));
 
-            parameterStoreDto.setBlackListScore(Double.parseDouble(generalParameter.get(ParameterStoreEnum.PARAM_BLACK_LIST_MAX_SCORE.getValue())));
+            String blackListScore = generalParameter.get(ParameterStoreEnum.PARAM_BLACK_LIST_MAX_SCORE.getValue());
+            parameterStoreDto.setBlackListScore(blackListScore != null ? Double.parseDouble(blackListScore) : 0.0);
 
-            log.info("ParameterStore: {}", Util.object2String(parameterStoreDto));
-
+            log.info("ParameterStoreDto obtenido: {}", parameterStoreDto.toString());
+            log.info("Parametros obtenidos del Parameter Store: {}", parameterStoreDto.getRegion()
+            + " - " + parameterStoreDto.getArnSnsOpenSearch()
+                    + " - " + parameterStoreDto.getParamDynamo().toString()
+                    + " - " + parameterStoreDto.getParamDynamo().getNameTable()
+                    + " - " + parameterStoreDto.getParamActiveVault().toString()
+                    + " - " + parameterStoreDto.getParamFlowConfig().toString()
+                    + " - " + parameterStoreDto.getMaxRetryBatch()
+                    + " - " + parameterStoreDto.getBlackListScore());
         } catch (Exception e) {
-            e.printStackTrace(new PrintWriter(errors));
-            String singleLineStackTrace = errors.toString().replace("\n", "\r");
-            log.error("{} {}", ConstantsEnum.ERROR_CONNECTION.getValue(), singleLineStackTrace);
+            log.error("Error al obtener los parámetros del Parameter Store", e);
         }
+
         return parameterStoreDto;
     }
 }

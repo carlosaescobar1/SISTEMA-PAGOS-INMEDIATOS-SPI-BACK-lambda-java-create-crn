@@ -40,11 +40,6 @@ public enum ParameterStoreEnum {
     PARAM_DYNAMO("/SPI/AWUE1ATHSPI-LAMBDA-TRANSV/jsonDynamoDirAval"),
 
     /**
-     * Ruta del parámetro que almacena la url del json de la configuracion de REDEBAN
-     */
-    PARAM_REDEBAN_CONFIG("/SPI/AWUE1ATHSPI-LAMBDA-TRANSV/redebanConfig"),
-
-    /**
      * Ruta del parámetro que almacena la cantidad maxima de intentos para el batch
      */
     PARAM_MAX_RETRY_BATCH("/SPI/AWUE1ATHSPI-LAMBDA-TRANSV/maxRetryBatch"),

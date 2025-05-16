@@ -142,7 +142,7 @@ public class DynamoSpiDto {
     private String merchantId;
 
     public DynamoSpiDto() {
-        this.vaultNameRec = ConstantsEnum.REDEBAN.getValue();
+        this.vaultNameRec = ConstantsEnum.CORNER.getValue();
     }
 
 }

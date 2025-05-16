@@ -5,20 +5,17 @@ import co.com.avc.constants.ConstantsEnum;
 import co.com.avc.models.dynamo.DynamoSpiDto;
 import co.com.ath.opensearch.logs.constants.TypeServiceConstants;
 import co.com.ath.opensearch.logs.entity.index_timeline.OSIndexTimeline;
-import co.com.avc.util.IpSelectorUtil;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class IndexTimeLineMapper {
 
     /**
      * Instancia del objeto que representa el indice index_timeline de Open search
      */
-    private OSIndexTimeline osIndexTimeline = new OSIndexTimeline();
+    private OSIndexTimeline osIndexTimeline;
 
-    private final IpSelectorUtil ipSelectorUtil;
 
-    public IndexTimeLineMapper(IpSelectorUtil ipSelectorUtil) {
-        this.ipSelectorUtil = ipSelectorUtil;
-    }
 
     /**
      * Método que mapea el objeto de entrada de la solicitud de registro (Enrollment)
@@ -47,8 +44,6 @@ public class IndexTimeLineMapper {
         osIndexTimeline.setBankId(getBankId(dynamoSpiDto));
 
         osIndexTimeline.setChanel(getChanel());
-
-        osIndexTimeline.setIp(getIp(dynamoSpiDto));
 
         return osIndexTimeline;
     }
@@ -87,8 +82,6 @@ public class IndexTimeLineMapper {
         osIndexTimeline.setBankId(getBankId(dynamoSpiDto));
 
         osIndexTimeline.setChanel(getChanel());
-
-        osIndexTimeline.setIp(getIp(dynamoSpiDto));
 
         return osIndexTimeline;
     }
@@ -131,14 +124,6 @@ public class IndexTimeLineMapper {
         return ConstantsEnum.HEADER_CHANNEL.getValue();
     }
 
-    private String getIp(DynamoSpiDto dynamoSpiDto) {
-        return dynamoSpiDto != null
-                && dynamoSpiDto.getAcctInfo() != null
-                && dynamoSpiDto.getAcctInfo().getBankId() != null
-                && !dynamoSpiDto.getAcctInfo().getBankId().trim().isEmpty()
-                ? ipSelectorUtil.getIp(dynamoSpiDto.getAcctInfo().getBankId())
-                : ConstantsEnum.EMPTY_STRING.getValue();
-    }
 
 
 }

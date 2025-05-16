@@ -2,6 +2,7 @@ package co.com.avc;
 
 import co.com.ath.commons.util.ATHException;
 import co.com.ath.commons.util.Util;
+import co.com.ath.opensearch.logs.entity.index_timeline.OSIndexTimeline;
 import co.com.avc.constants.ConstantsEnum;
 import co.com.avc.mapper.*;
 import co.com.avc.models.MessageDto;
@@ -18,7 +19,6 @@ import co.com.avc.repository.*;
 import co.com.avc.service.*;
 
 
-import co.com.avc.util.IpSelectorUtil;
 import co.com.avc.util.SnsSelectorUtil;
 import co.com.avc.util.TimeLineUtil;
 import co.com.avc.util.VaultSelectorUtil;
@@ -28,8 +28,7 @@ import io.micronaut.function.aws.MicronautRequestHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
@@ -103,11 +102,6 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
     private final ParameterStoreDto parameterStoreDto = parameterStoreRepository.getParameters();
 
     /**
-     * Método para seleccionar la Ip según al entidad
-     */
-    private final IpSelectorUtil ipSelectorUtil = new IpSelectorUtil(parameterStoreDto.getRedebanConfigDto().getParamIp());
-
-    /**
      * Servicio para obtener los valores de los secretos
      */
     private final SecretManagerRepository secretManagerRepository = new SecretManagerRepository(parameterStoreDto.getArnSecretOpenSearch());
@@ -145,7 +139,6 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
             client,
             blackListService
     );
-
     /**
      * Instancia del mappers del índice de rechazados
      */
@@ -178,14 +171,16 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
             updateOpenSearchService
     );
 
-    private final IndexTimeLineMapper indexTimeLineMapper = new IndexTimeLineMapper(ipSelectorUtil);
+    private final OSIndexTimeline osIndexTimeline = new OSIndexTimeline();
+
+    private final IndexTimeLineMapper indexTimeLineMapper = new IndexTimeLineMapper(osIndexTimeline);
 
     private final TimeLineUtil timeLineUtil = new TimeLineUtil(opensearchLogService,
             indexTimeLineMapper,
             snsSelectorUtil
     );
 
-    private final ICornerEnrollmentTransvService redEnrollmentTransvService = new CornerEnrollmentTransvServiceImpl(
+    private final ICornerEnrollmentTransvService cornerEnrollmentTransvService = new CornerEnrollmentTransvServiceImpl(
             requestMapper,
             updateOpenSearchService,
             openSearchSynchService,
@@ -260,7 +255,12 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
      */
     private void redirect(SQSEvent input) {
         log.info("Entra a redirect");
-        log.info("Table Name" + parameterStoreDto.getParamDynamo().getNameTable());
+        log.info("parameterStoreDto Objetos: " + parameterStoreDto. getParamDynamo()
+        + " " + parameterStoreDto.getRegion()
+        + " " + parameterStoreDto.getArnSecretOpenSearch()
+        + " " + parameterStoreDto.getArnSnsOpenSearch()
+        + " " + parameterStoreDto.getParamActiveVault());
+        log.info("Table Name: " + parameterStoreDto.getParamDynamo().getNameTable());
         List<SQSEvent.SQSMessage> mensajes = input.getRecords();
         for (SQSEvent.SQSMessage msg : mensajes) {
             // Verifíca si el cuerpo del mensaje no está vacío.
@@ -294,7 +294,7 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
                 if (validateUtil.validateBannedKeys(dynamoSpiDto, fileName, rqID, rqUUID)) {
 
                     //Servicio de creación en camara y dirAval
-                    redEnrollmentTransvService.cornerEnrollService(messageDto, sqsDto.getSubject(),
+                    cornerEnrollmentTransvService.cornerEnrollService(messageDto, sqsDto.getSubject(),
                             dynamoSpiDto, rqID, dateOperation, rqUUID);
                 }
                 log.info("Finalizo el proceso de la lambda");
