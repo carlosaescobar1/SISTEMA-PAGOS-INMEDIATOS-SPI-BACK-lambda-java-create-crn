@@ -1,4 +1,4 @@
-
-
-rootProject.name="SISTEMA-PAGOS-INMEDIATOS-SPI-BACK-lambda-java-create-crn"
+rootProject.name = "lambda-java-val-create-micro-corner"
+include 'build:generated:sources:annotationProcessor:java:test:lambda-java-create-micro-corner'
+findProject(':build:generated:sources:annotationProcessor:java:test:lambda-java-create-micro-corner')?.name = 'lambda-java-create-micro-corner'
 

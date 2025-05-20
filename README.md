@@ -1,8 +1,8 @@
-## Micronaut 4.8.2 Documentation
+## Micronaut 4.8.0 Documentation
 
-- [User Guide](https://docs.micronaut.io/4.8.2/guide/index.html)
-- [API Reference](https://docs.micronaut.io/4.8.2/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/4.8.2/guide/configurationreference.html)
+- [User Guide](https://docs.micronaut.io/4.8.0/guide/index.html)
+- [API Reference](https://docs.micronaut.io/4.8.0/api/index.html)
+- [Configuration Reference](https://docs.micronaut.io/4.8.0/guide/configurationreference.html)
 - [Micronaut Guides](https://guides.micronaut.io/index.html)
 ---
 
@@ -15,11 +15,16 @@ Handler: io.micronaut.function.aws.proxy.payload1.ApiGatewayProxyRequestEventFun
 - [Micronaut Gradle Plugin documentation](https://micronaut-projects.github.io/micronaut-gradle-plugin/latest/)
 - [GraalVM Gradle Plugin documentation](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
 - [Shadow Gradle Plugin](https://gradleup.com/shadow/)
-## Feature http-client-jdk documentation
+## Feature micronaut-aot documentation
 
-- [Micronaut HTTP Client Jdk documentation](https://docs.micronaut.io/latest/guide/index.html#jdkHttpClient)
+- [Micronaut AOT documentation](https://micronaut-projects.github.io/micronaut-aot/latest/guide/)
 
-- [https://openjdk.org/groups/net/httpclient/intro.html](https://openjdk.org/groups/net/httpclient/intro.html)
+
+## Feature aws-lambda-events-serde documentation
+
+- [Micronaut AWS Lambda Events Serde documentation](https://micronaut-projects.github.io/micronaut-aws/snapshot/guide/#eventsLambdaSerde)
+
+- [https://github.com/aws/aws-lambda-java-libs/tree/main/aws-lambda-java-events](https://github.com/aws/aws-lambda-java-libs/tree/main/aws-lambda-java-events)
 
 
 ## Feature aws-lambda documentation
@@ -32,15 +37,10 @@ Handler: io.micronaut.function.aws.proxy.payload1.ApiGatewayProxyRequestEventFun
 - [Micronaut Serialization Jackson Core documentation](https://micronaut-projects.github.io/micronaut-serialization/latest/guide/)
 
 
-## Feature aws-lambda-events-serde documentation
+## Feature http-client-jdk documentation
 
-- [Micronaut AWS Lambda Events Serde documentation](https://micronaut-projects.github.io/micronaut-aws/snapshot/guide/#eventsLambdaSerde)
+- [Micronaut HTTP Client Jdk documentation](https://docs.micronaut.io/latest/guide/index.html#jdkHttpClient)
 
-- [https://github.com/aws/aws-lambda-java-libs/tree/main/aws-lambda-java-events](https://github.com/aws/aws-lambda-java-libs/tree/main/aws-lambda-java-events)
-
-
-## Feature micronaut-aot documentation
-
-- [Micronaut AOT documentation](https://micronaut-projects.github.io/micronaut-aot/latest/guide/)
+- [https://openjdk.org/groups/net/httpclient/intro.html](https://openjdk.org/groups/net/httpclient/intro.html)
 
 
