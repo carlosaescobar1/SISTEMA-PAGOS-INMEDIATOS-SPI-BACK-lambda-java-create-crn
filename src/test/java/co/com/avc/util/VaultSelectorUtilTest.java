@@ -1,8 +1,8 @@
 package co.com.avc.util;
 
-import co.com.ath.constants.ConstantsEnum;
-import co.com.ath.models.parameter.ParamActiveVault;
-import co.com.ath.models.parameter.ParamVaultUpload;
+import co.com.avc.constants.ConstantsEnum;
+import co.com.avc.models.parameter.ParamActiveVault;
+import co.com.avc.models.parameter.ParamVaultUpload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +34,7 @@ class VaultSelectorUtilTest {
         List<ParamVaultUpload> vaults = new ArrayList<>();
 
         ParamVaultUpload redebanVault = new ParamVaultUpload();
-        redebanVault.setVaultName(ConstantsEnum.REDEBAN_PERSON.getValue());
+        redebanVault.setVaultName(ConstantsEnum.CORNER.getValue());
         redebanVault.setUrlEnrollmentVault("https://test-redeban.com");
         redebanVault.setConsentMigrate("https://test-consent.com");
         vaults.add(redebanVault);
@@ -49,7 +50,7 @@ class VaultSelectorUtilTest {
         ParamVaultUpload result = vaultSelectorUtil.selectorVault();
 
         // Assert
-        assertEquals(ConstantsEnum.REDEBAN_PERSON.getValue(), result.getVaultName());
+        assertEquals(ConstantsEnum.CORNER.getValue(), result.getVaultName());
         assertEquals("https://test-redeban.com", result.getUrlEnrollmentVault());
         assertEquals("https://test-consent.com", result.getConsentMigrate());
     }

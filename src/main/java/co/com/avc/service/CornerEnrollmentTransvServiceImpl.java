@@ -114,13 +114,16 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                 messageDto.getMessageDtoBatch().getOsIndexBatch().getFileName()
                 : subject);
 
+        log.info("Selectores: {}", Util.object2String(vaultSelectorUtil));
         ParamVaultUpload paramVaultUpload = vaultSelectorUtil.selectorVault();
+        log.info("ParamVaultUpload: {}", Util.object2String(paramVaultUpload));
 
         HttpResponseWrapper httpResponseWrapper;
 
+        log.info("ParamFlowConfig: {}", Util.object2String(paramFlowConfig));
         if (paramFlowConfig.getVaultSyncFlow().equalsIgnoreCase(ConstantsEnum.ACTIVE_FLOW.getValue())) {
             try {
-
+                log.info("Inicia guardado en dynamo flujo de cámaras activo");
                 timeLineUtil.sendLogRq(dynamoSpiDto, rqId);
 
                 String consent = dynamoSpiDto.getConsent();
@@ -184,6 +187,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                 timeLineUtil.sendLogRs(dynamoSpiDto, rqId);
             }
         } else {
+            log.info("El flujo de sincronización no está activo");
             processEnrollmentDirAvalService(dynamoSpiDto, messageDto, rqId);
         }
     }
@@ -213,10 +217,11 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
         if (httpStatusCode == ResponseStatusCodeEnum.PERSON_SUCCESS_STATUS_CODE.getValue()
                 || (httpStatusCode == ResponseStatusCodeEnum.PERSON_CREATED_STATUS_CODE.getValue())
         ) {
-
+            log.info("Respuesta del servicio exitosa: {}", Util.object2String(msgInformationResponse));
             updateOpenSearchService.processSuccessBatchAction(messageDto);
 
         } else {
+            log.info("Respuesta del servicio no exitosa: {}", Util.object2String(msgInformationResponse));
             updateOpenSearchService.processOpensearchAction(messageDto,
                     dynamoSpiDto,
                     "404",
