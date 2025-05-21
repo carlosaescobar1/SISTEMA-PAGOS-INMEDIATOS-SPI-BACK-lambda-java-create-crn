@@ -83,13 +83,12 @@ public class RequestMapper {
         log.info("bodyMapper: " + Util.object2String(dynamoSpiDto));
 
         enrollmentRq.setPerson(getPerson(dynamoSpiDto));
-        log.info("Person: " + Util.object2String(enrollmentRq.getPerson()));
+
         enrollmentRq.setKey(getKey(dynamoSpiDto));
-        log.info("Key: " + Util.object2String(enrollmentRq.getKey()));
+
         enrollmentRq.setPaymentMethod(getPaymentMethod(dynamoSpiDto));
-        log.info("PaymentMethod: " + Util.object2StringWithNulls(enrollmentRq.getPaymentMethod()));
+
         enrollmentRq.setDescription("");
-        log.info("Description: " + enrollmentRq.getDescription());
 
         log.info("Enrollment RQ: " + Util.object2String(enrollmentRq));
         log.info("bodyMapper enrollmentRq: " + enrollmentRq.toString());
@@ -109,6 +108,7 @@ public class RequestMapper {
         person.setDocumentType(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType());
         person.setDocumentNumber(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum());
 
+        log.info("getPerson: " + Util.object2String(person));
         return person;
     }
 
@@ -118,7 +118,7 @@ public class RequestMapper {
         paymentMethod.setTypePaymentAcc(dynamoSpiDto.getAcctInfo().getAcctType());
         paymentMethod.setAccountNumber(dynamoSpiDto.getAcctInfo().getAcctId());
 
-        log.info("getPaymentMethod: " + Util.object2StringWithNulls(paymentMethod));
+        log.info("getPaymentMethod: " + Util.object2String(paymentMethod));
         return paymentMethod;
     }
 
@@ -127,6 +127,8 @@ public class RequestMapper {
         Key key = new Key();
         key.setKeyType(dynamoSpiDto.getAcctInfo().getAcctType());
         key.setValueKey(dynamoSpiDto.getAcctInfo().getAcctId());
+
+        log.info("getKey: " + Util.object2String(key));
         return key;
     }
 

@@ -216,7 +216,7 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
             redirect(input);
         } catch (ATHException athExp) {
             athExp.printStackTrace(new PrintWriter(errors));
-
+            log.error("Error en la lambda: {}", athExp.getMessage());
             updateOpenSearchService
                     .processOpensearchAction(
                             eventRq, fileName,

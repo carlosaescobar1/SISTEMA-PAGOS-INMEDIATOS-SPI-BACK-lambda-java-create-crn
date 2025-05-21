@@ -113,8 +113,8 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
         String fileName = (messageDto.getMessageDtoBatch() != null ?
                 messageDto.getMessageDtoBatch().getOsIndexBatch().getFileName()
                 : subject);
+        log.info("FileName: {}", fileName);
 
-        log.info("Selectores: {}", Util.object2String(vaultSelectorUtil));
         ParamVaultUpload paramVaultUpload = vaultSelectorUtil.selectorVault();
         log.info("ParamVaultUpload: {}", Util.object2String(paramVaultUpload));
 
