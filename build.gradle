@@ -90,7 +90,7 @@ micronaut {
     testRuntime("junit5")
     processing {
         incremental(true)
-        annotations("co.com.avc.*")
+        annotations("co.com.avc.*", "co.com.ath.*", "co.com.*")
     }
     aot {
         // Please review carefully the optimizations enabled below

@@ -19,11 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 public class RequestMapper {
 
     /**
-     * Instancia del objeto del body de redeban
-     */
-    private final EnrollmentRq enrollmentRq = new EnrollmentRq();
-
-    /**
      * Instandia del objeto de dynamo
      */
     private DynamoSpiDto dynamoSpiDto = new DynamoSpiDto();
@@ -82,20 +77,22 @@ public class RequestMapper {
     }
 
     public EnrollmentRq bodyMapper(DynamoSpiDto dynamoSpiDto) {
+
+        EnrollmentRq enrollmentRq = new EnrollmentRq();
         log.info("bodyMapper ingreso");
-        log.info("bodyMapper: " + Util.object2StringWithNulls(dynamoSpiDto));
+        log.info("bodyMapper: " + Util.object2String(dynamoSpiDto));
 
         enrollmentRq.setPerson(getPerson(dynamoSpiDto));
-        log.info("Person: " + Util.object2StringWithNulls(enrollmentRq.getPerson()));
+        log.info("Person: " + Util.object2String(enrollmentRq.getPerson()));
         enrollmentRq.setKey(getKey(dynamoSpiDto));
-        log.info("Key: " + Util.object2StringWithNulls(enrollmentRq.getKey()));
+        log.info("Key: " + Util.object2String(enrollmentRq.getKey()));
         enrollmentRq.setPaymentMethod(getPaymentMethod(dynamoSpiDto));
         log.info("PaymentMethod: " + Util.object2StringWithNulls(enrollmentRq.getPaymentMethod()));
         enrollmentRq.setDescription("");
         log.info("Description: " + enrollmentRq.getDescription());
 
-        log.info("Enrollment RQ: " + Util.object2StringWithNulls(enrollmentRq));
-
+        log.info("Enrollment RQ: " + Util.object2String(enrollmentRq));
+        log.info("bodyMapper enrollmentRq: " + enrollmentRq.toString());
         return enrollmentRq;
     }
 
@@ -104,22 +101,14 @@ public class RequestMapper {
         log.info("getPerson ingreso");
         Person person = new Person();
         person.setFirstName(dynamoSpiDto.getCustInf().getCustFirstName());
-        log.info("getPerson firstName: " + person.getFirstName());
         person.setSecondName(dynamoSpiDto.getCustInf().getCustSecondName());
-        log.info("getPerson secondName: " + person.getSecondName());
         person.setFirstSurName(dynamoSpiDto.getCustInf().getCustFirstLastName());
-        log.info("getPerson firstSurName: " + person.getFirstSurName());
         person.setSecondSurName(dynamoSpiDto.getCustInf().getCustSecondLastName());
-        log.info("getPerson secondSurName: " + person.getSecondSurName());
         person.setTypePerson(dynamoSpiDto.getCustType());
-        log.info("getPerson typePerson: " + person.getTypePerson());
         person.setBusinessName("");
         person.setDocumentType(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType());
-        log.info("getPerson documentType: " + person.getDocumentType());
         person.setDocumentNumber(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum());
-        log.info("getPerson documentNumber: " + person.getDocumentNumber());
 
-        log.info("getPerson: " + Util.object2StringWithNulls(person));
         return person;
     }
 
@@ -127,9 +116,7 @@ public class RequestMapper {
         log.info("getPaymentMethod ingreso");
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setTypePaymentAcc(dynamoSpiDto.getAcctInfo().getAcctType());
-        log.info("getPaymentMethod typePaymentAcc: " + paymentMethod.getTypePaymentAcc());
         paymentMethod.setAccountNumber(dynamoSpiDto.getAcctInfo().getAcctId());
-        log.info("getPaymentMethod accountNumber: " + paymentMethod.getAccountNumber());
 
         log.info("getPaymentMethod: " + Util.object2StringWithNulls(paymentMethod));
         return paymentMethod;
@@ -139,10 +126,7 @@ public class RequestMapper {
         log.info("getKey ingreso");
         Key key = new Key();
         key.setKeyType(dynamoSpiDto.getAcctInfo().getAcctType());
-        log.info("getKey keyType: " + key.getKeyType());
         key.setValueKey(dynamoSpiDto.getAcctInfo().getAcctId());
-        log.info("getKey valueKey: " + key.getValueKey());
-        log.info("getKey: " + Util.object2StringWithNulls(key));
         return key;
     }
 

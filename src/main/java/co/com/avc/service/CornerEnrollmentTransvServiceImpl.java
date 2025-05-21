@@ -27,6 +27,7 @@ import co.com.avc.models.parameter.VaultServicesTimeOut;
 import co.com.avc.repository.DynamoRepository;
 import co.com.avc.util.TimeLineUtil;
 import co.com.avc.util.VaultSelectorUtil;
+import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +40,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
     /**
      * Interfaz del servicio de creación de Corner
      */
+    @Inject
     private final ICornerEnrollmentAccountService cornerEnrollmentService = new CornerEnrollmentAccountServiceImpl();
 
     /**
@@ -102,6 +104,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
     public void cornerEnrollService(MessageDto messageDto, String subject, DynamoSpiDto dynamoSpiDto, String rqId, String dateOperation, String rqUUID) {
 
         log.info("Entra a CornerEnrollService");
+        log.info("cornerEnrollmentService es nulo? {}", cornerEnrollmentService == null);
 
         EnrollmentRq enrollmentRq = requestMapper.bodyMapper(dynamoSpiDto);
 
@@ -113,7 +116,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
 
         ParamVaultUpload paramVaultUpload = vaultSelectorUtil.selectorVault();
 
-        HttpResponseWrapper httpResponseWrapper = null;
+        HttpResponseWrapper httpResponseWrapper;
 
         if (paramFlowConfig.getVaultSyncFlow().equalsIgnoreCase(ConstantsEnum.ACTIVE_FLOW.getValue())) {
             try {
