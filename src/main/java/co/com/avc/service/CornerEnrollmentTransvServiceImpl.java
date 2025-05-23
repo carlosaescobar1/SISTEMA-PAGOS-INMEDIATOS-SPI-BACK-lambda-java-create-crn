@@ -108,7 +108,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
 
         EnrollmentRq enrollmentRq = requestMapper.bodyMapper(dynamoSpiDto);
 
-        log.info("EnrollmentRq: {}", Util.object2String(enrollmentRq));
+        log.info("EnrollmentRq: {}", enrollmentRq.toString());
 
         String fileName = (messageDto.getMessageDtoBatch() != null ?
                 messageDto.getMessageDtoBatch().getOsIndexBatch().getFileName()
@@ -116,21 +116,22 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
         log.info("FileName: {}", fileName);
 
         ParamVaultUpload paramVaultUpload = vaultSelectorUtil.selectorVault();
-        log.info("ParamVaultUpload: {}", Util.object2String(paramVaultUpload));
 
         HttpResponseWrapper httpResponseWrapper;
 
-        log.info("ParamFlowConfig: {}", Util.object2String(paramFlowConfig));
         if (paramFlowConfig.getVaultSyncFlow().equalsIgnoreCase(ConstantsEnum.ACTIVE_FLOW.getValue())) {
             try {
                 log.info("Inicia guardado en dynamo flujo de cámaras activo");
                 timeLineUtil.sendLogRq(dynamoSpiDto, rqId);
-
                 String consent = dynamoSpiDto.getConsent();
+                log.info("Consentimiento: {}", consent);
                 //variable fecha consentimiento
                 String effDtConsent = dynamoSpiDto.getEffDtConsent();
 
+                log.info("Fecha consentimiento: {}", effDtConsent);
+
                 if (ConsentEnum.N.getValue().equalsIgnoreCase(consent)) {
+                    log.info("Entro en el if");
                     log.info("Consentimiento es N, creación en DirectorioAval");
                     DynamoSpiEntity dynamoSpiEntity = dynamoMapper.dynamoDtoToDynamoEntity(dynamoSpiDto);
                     //Guardado en Dynamo
@@ -140,6 +141,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                     //envio de mensaje dto para batch
                     updateOpenSearchService.processSuccessBatchAction(messageDto);
                 } else if (ConstantsEnum.S.getValue().equalsIgnoreCase(consent) && effDtConsent != null && !effDtConsent.isEmpty()) {
+                    log.info("Entro en el else if");
                     log.info("Consentimiento es S, conexion con corner");
 
                     httpResponseWrapper = cornerEnrollmentService
@@ -148,14 +150,11 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                                     paramVaultUpload.getUrlEnrollmentVault(),
                                     vaultServicesTimeOut.getCornerEnrollmentTimeOut());
 
-                    log.info("HttpResponseWrapper: {}", Util.object2String(httpResponseWrapper));
-                    log.info("HttpStatusCode: {}", httpResponseWrapper.getStatusCode());
-                    log.info("ParamVaultUpload: {}", Util.object2String(paramVaultUpload));
+                    log.info("Respuesta de la cámara: {}", httpResponseWrapper.getResponseBody());
+                    log.info("Código de respuesta: {}", httpResponseWrapper.getStatusCode());
 
                     MsgInformationResponse msgInformationResponse = (MsgInformationResponse)
                             Util.string2object(httpResponseWrapper.getResponseBody(), MsgInformationResponse.class);
-
-                    log.info("MsgInformationResponse: {}", Util.object2String(msgInformationResponse));
 
                     log.info("MessageDto batch: {}", Util.object2String(messageDto.getMessageDtoBatch()));
                     if (messageDto.getMessageDtoBatch() != null
@@ -166,12 +165,12 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                         processEnrollmentServiceRs(msgInformationResponse,
                                 httpResponseWrapper.getStatusCode(),
                                 dynamoSpiDto, messageDto,
-                                fileName, rqId, subject, rqUUID);
+                                fileName, rqId, subject);
 
                     } else {
                         processEnrollmentServiceRs(msgInformationResponse, httpResponseWrapper.getStatusCode(),
                                 dynamoSpiDto, messageDto, enrollmentRq, "S",
-                                paramVaultUpload.getConsentMigrate(), fileName, rqId, subject, rqUUID);
+                                paramVaultUpload.getUrlEnrollmentVault(), fileName, rqId, subject);
                     }
                 } else {
                     log.info("El campo effDtConsent es NULL");
@@ -209,8 +208,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                                             MessageDto messageDto,
                                             String fileName,
                                             String rqId,
-                                            String subject,
-                                            String rqUUID
+                                            String subject
     ) {
         log.info("Inicia ProcessEnrollmentServiceRs");
 
@@ -221,14 +219,12 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
             updateOpenSearchService.processSuccessBatchAction(messageDto);
 
         } else {
-            log.info("Respuesta del servicio no exitosa: {}", Util.object2String(msgInformationResponse));
+            log.info("El servicio no fue exitoso");
             updateOpenSearchService.processOpensearchAction(messageDto,
-                    dynamoSpiDto,
-                    "404",
-                    "",
-                    rqId,
-                    subject,
-                    rqUUID
+                    fileName,
+                    String.valueOf(httpStatusCode),
+                    ConstantsEnum.ERROR_SERVICE.getValue(),
+                    rqId
             );
         }
     }
@@ -239,7 +235,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                                             DynamoSpiDto dynamoSpiDto,
                                             MessageDto messageDto, EnrollmentRq enrollmentRq,
                                             String consent, String uri,
-                                            String fileName, String rqId, String subject, String rqUUID
+                                            String fileName, String rqId, String subject
     ) {
 
         if (httpStatusCode == ResponseStatusCodeEnum.PERSON_SUCCESS_STATUS_CODE.getValue()

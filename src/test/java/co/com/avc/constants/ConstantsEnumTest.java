@@ -24,7 +24,7 @@ class ConstantsEnumTest {
                 break;
 
             case VAULT_NAME:
-                assertEquals("REDEBAN", constant.getValue());
+                assertEquals("CORNER", constant.getValue());
                 break;
 
             case CEL:
@@ -48,11 +48,11 @@ class ConstantsEnumTest {
                 break;
 
             case CORNER:
-                assertEquals("REDEBAN", constant.getValue());
+                assertEquals("CORNER", constant.getValue());
                 break;
 
             case CORNER_PERSON:
-                assertEquals("REDEBAN_PERSON", constant.getValue());
+                assertEquals("CORNER", constant.getValue());
                 break;
 
             case ERROR_SAVE:

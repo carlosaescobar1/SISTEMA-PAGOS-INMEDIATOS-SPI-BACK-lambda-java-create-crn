@@ -15,7 +15,7 @@ public enum ParameterStoreEnum {
     /**
      * Ruta del parámetro que almacena la url del json de las cámaras disponibles
      */
-    PARAM_JSON_VAULT("/SPI/AWUE1ATHSPI-LAMBDA-TRANSV/jsonActiveVault"),
+    PARAM_JSON_VAULT("/SPI/AWUE1ATHSPI-LAMBDA-TRANSV/jsonActiveVaultCor"),
 
     /**
      * Ruta del parámetro que almacena la url del SNS que activara la sonda.

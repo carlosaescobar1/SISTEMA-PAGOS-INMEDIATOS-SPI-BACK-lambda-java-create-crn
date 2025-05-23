@@ -10,8 +10,8 @@ class VaultServicesTimeOutTest {
     @Test
     void vaultParamTest() {
 
-        vaultServicesTimeOut.setRedEnrollmentTimeOut(1500);
-        Assertions.assertEquals(1500, vaultServicesTimeOut.getRedEnrollmentTimeOut());
+        vaultServicesTimeOut.setCornerEnrollmentTimeOut(1500);
+        Assertions.assertEquals(1500, vaultServicesTimeOut.getCornerEnrollmentTimeOut());
 
     }
 

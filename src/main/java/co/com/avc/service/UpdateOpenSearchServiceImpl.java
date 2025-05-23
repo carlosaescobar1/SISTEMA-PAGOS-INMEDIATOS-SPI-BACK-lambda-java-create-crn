@@ -346,8 +346,7 @@ public class UpdateOpenSearchServiceImpl implements IUpdateOpenSearchService{
                                         String fileName,
                                         String errorType,
                                         String errorDesc,
-                                        String rqId,
-                                        String rqUUID) {
+                                        String rqId) {
 
         log.info("MessageDto Recibido:  {}", messageDto);
 
@@ -355,7 +354,7 @@ public class UpdateOpenSearchServiceImpl implements IUpdateOpenSearchService{
         log.info("DynamoSpiDto generado:  {}", dynamoSpiDto);
 
         OSIndexBatch osIndexBatch = indexBatchMapper.mapEnrollmentRqToIndexBatch(dynamoSpiDto,
-                rqUUID,
+                rqId,
                 ActionConstants.EVENT_BATCH_ENROLL.getValue(),
                 fileName);
 

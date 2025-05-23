@@ -2,6 +2,8 @@ package co.com.avc.models.parameter;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ParamVaultRecTest {
 
     @Test
@@ -10,11 +12,9 @@ class ParamVaultRecTest {
 
         // Set values
         paramVaultRec.setVaultNameRec("testVaultName");
-        paramVaultRec.setVaultUploadMas("testVaultUpload");
 
         // Assert values
         assertEquals("testVaultName", paramVaultRec.getVaultNameRec());
-        assertEquals("testVaultUpload", paramVaultRec.getVaultUploadMas());
     }
 
 }

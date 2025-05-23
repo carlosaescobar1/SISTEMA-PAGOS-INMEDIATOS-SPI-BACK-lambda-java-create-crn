@@ -3,6 +3,8 @@ package co.com.avc.constants;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class SeverityEnumTest {
 
     @ParameterizedTest
@@ -13,7 +15,7 @@ class SeverityEnumTest {
      */
     void severityEnumTest(SeverityEnum severity) {
         switch (severity) {
-            case IFO:
+            case INFO:
                 assertEquals("Info", severity.getValue());
                 break;
             case WARNING:

@@ -39,8 +39,7 @@ public interface IUpdateOpenSearchService {
             String fileName,
             String errorType,
             String errorDesc,
-            String rqId,
-            String rqUUID
+            String rqId
     );
 
     void processSuccessBatchAction(MessageDto messageDto);

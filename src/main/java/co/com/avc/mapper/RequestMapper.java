@@ -34,7 +34,7 @@ public class RequestMapper {
             if (sqsDto.getSubject() != null && sqsDto.getSubject().equalsIgnoreCase(ConstantsEnum.SUBJECT_BATCH.getValue())) {
                 log.info("messageDtoMapper ingreso if sonda");
                 log.info("Message recibido: {}", sqsDto.getMessage());
-                Object result = Util.string2objectWhitNulls(sqsDto.getMessage(), MessageDtoBatch.class);
+                Object result = Util.string2object(sqsDto.getMessage(), MessageDtoBatch.class);
                 log.info("result: {}", result.toString());
                 if (result instanceof MessageDtoBatch) {
                     MessageDtoBatch messageDtoBatch = (MessageDtoBatch) result;
@@ -77,59 +77,70 @@ public class RequestMapper {
     }
 
     public EnrollmentRq bodyMapper(DynamoSpiDto dynamoSpiDto) {
+        try {
 
-        EnrollmentRq enrollmentRq = new EnrollmentRq();
-        log.info("bodyMapper ingreso");
-        log.info("bodyMapper: " + Util.object2String(dynamoSpiDto));
+            if (dynamoSpiDto == null) {
+                throw new ATHException(ResponseServiceEnum.ERROR_TEC_EXCEPTION.getServerStatusCode(),
+                        ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusDesc(), ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusCode());
+            }
 
-        enrollmentRq.setPerson(getPerson(dynamoSpiDto));
+            EnrollmentRq enrollmentRq = new EnrollmentRq();
+            log.info("bodyMapper ingreso");
+            enrollmentRq.setPerson(getPerson(dynamoSpiDto));
+            enrollmentRq.setKey(getKey(dynamoSpiDto));
+            enrollmentRq.setPaymentMethod(getPaymentMethod(dynamoSpiDto));
+            enrollmentRq.setDescription("");
 
-        enrollmentRq.setKey(getKey(dynamoSpiDto));
-
-        enrollmentRq.setPaymentMethod(getPaymentMethod(dynamoSpiDto));
-
-        enrollmentRq.setDescription("");
-
-        log.info("Enrollment RQ: " + Util.object2String(enrollmentRq));
-        log.info("bodyMapper enrollmentRq: " + enrollmentRq.toString());
-        return enrollmentRq;
+            log.info("Enrollment RQ: " + Util.object2String(enrollmentRq));
+            return enrollmentRq;
+        } catch (Exception e) {
+            log.error("Error construyendo el body: ", e);
+            throw e;
+        }
     }
 
 
     private Person getPerson(DynamoSpiDto dynamoSpiDto) {
-        log.info("getPerson ingreso");
-        Person person = new Person();
-        person.setFirstName(dynamoSpiDto.getCustInf().getCustFirstName());
-        person.setSecondName(dynamoSpiDto.getCustInf().getCustSecondName());
-        person.setFirstSurName(dynamoSpiDto.getCustInf().getCustFirstLastName());
-        person.setSecondSurName(dynamoSpiDto.getCustInf().getCustSecondLastName());
-        person.setTypePerson(dynamoSpiDto.getCustType());
-        person.setBusinessName("");
-        person.setDocumentType(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType());
-        person.setDocumentNumber(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum());
+        try {
+            Person person = new Person();
+            person.setFirstName(dynamoSpiDto.getCustInf().getCustFirstName());
+            person.setSecondName(dynamoSpiDto.getCustInf().getCustSecondName());
+            person.setFirstSurName(dynamoSpiDto.getCustInf().getCustFirstLastName());
+            person.setSecondSurName(dynamoSpiDto.getCustInf().getCustSecondLastName());
+            person.setTypePerson(dynamoSpiDto.getCustType());
+            person.setBusinessName("");
+            person.setDocumentType(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType());
+            person.setDocumentNumber(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum());
 
-        log.info("getPerson: " + Util.object2String(person));
-        return person;
+            return person;
+        } catch (Exception e) {
+            log.error("Error construyendo el body: ", e);
+            throw e;
+        }
     }
 
     private PaymentMethod getPaymentMethod(DynamoSpiDto dynamoSpiDto) {
-        log.info("getPaymentMethod ingreso");
-        PaymentMethod paymentMethod = new PaymentMethod();
-        paymentMethod.setTypePaymentAcc(dynamoSpiDto.getAcctInfo().getAcctType());
-        paymentMethod.setAccountNumber(dynamoSpiDto.getAcctInfo().getAcctId());
-
-        log.info("getPaymentMethod: " + Util.object2String(paymentMethod));
-        return paymentMethod;
+        try {
+            PaymentMethod paymentMethod = new PaymentMethod();
+            paymentMethod.setTypePaymentAcc(dynamoSpiDto.getAcctInfo().getAcctType());
+            paymentMethod.setAccountNumber(dynamoSpiDto.getAcctInfo().getAcctId());
+            return paymentMethod;
+        } catch (Exception e) {
+            log.error("Error construyendo el body: ", e);
+            throw e;
+        }
     }
 
     private Key getKey(DynamoSpiDto dynamoSpiDto) {
-        log.info("getKey ingreso");
-        Key key = new Key();
-        key.setKeyType(dynamoSpiDto.getAcctInfo().getAcctType());
-        key.setValueKey(dynamoSpiDto.getAcctInfo().getAcctId());
-
-        log.info("getKey: " + Util.object2String(key));
-        return key;
+        try {
+            Key key = new Key();
+            key.setKeyType(dynamoSpiDto.getKey().getKeyType());
+            key.setValueKey(dynamoSpiDto.getKey().getKeyId());
+            return key;
+        } catch (Exception e) {
+            log.error("Error construyendo el body: ", e);
+            throw e;
+        }
     }
 
 }

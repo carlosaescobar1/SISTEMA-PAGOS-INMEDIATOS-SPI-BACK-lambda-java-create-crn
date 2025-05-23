@@ -222,7 +222,7 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
                             eventRq, fileName,
                             ConstantsEnum.ERROR_ATH_SERVICE.getValue(),
                             athExp.getMessage(),
-                            rqID, rqUUID);
+                            rqID);
 
             log.error("{}{}", ConstantsEnum.ERROR_ATH_SERVICE.getValue(), errors);
 
@@ -233,7 +233,7 @@ public class LambdaHandler extends MicronautRequestHandler<SQSEvent, Void> {
                             eventRq, fileName,
                             ConstantsEnum.ERROR_ATH_SERVICE.getValue(),
                             exp.getMessage(),
-                            rqID, rqUUID);
+                            rqID);
 
             log.error("{}{}", ConstantsEnum.ERROR_SERVICE.getValue(), errors);
 

@@ -32,6 +32,5 @@ public class ParamVaultUpload {
 
     private String vaultName;
     private String arnSnsVaultEnrollment;
-    private String consentMigrate;
     private String urlEnrollmentVault;
 }

@@ -36,7 +36,6 @@ class VaultSelectorUtilTest {
         ParamVaultUpload redebanVault = new ParamVaultUpload();
         redebanVault.setVaultName(ConstantsEnum.CORNER.getValue());
         redebanVault.setUrlEnrollmentVault("https://test-redeban.com");
-        redebanVault.setConsentMigrate("https://test-consent.com");
         vaults.add(redebanVault);
 
         ParamVaultUpload otherVault = new ParamVaultUpload();
@@ -52,7 +51,6 @@ class VaultSelectorUtilTest {
         // Assert
         assertEquals(ConstantsEnum.CORNER.getValue(), result.getVaultName());
         assertEquals("https://test-redeban.com", result.getUrlEnrollmentVault());
-        assertEquals("https://test-consent.com", result.getConsentMigrate());
     }
 
     @Test

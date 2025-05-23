@@ -30,7 +30,7 @@ class ParamaterStoreTest {
 
         parameterStoreDto.setArnSecretOpenSearch(test);
 
-        vaultServicesTimeOut.setRedEnrollmentTimeOut(1500);
+        vaultServicesTimeOut.setCornerEnrollmentTimeOut(1500);
 
         parameterStoreDto.setVaultServicesTimeOut(vaultServicesTimeOut);
 
