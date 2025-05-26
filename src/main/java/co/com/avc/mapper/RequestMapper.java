@@ -7,7 +7,7 @@ import co.com.avc.constants.ResponseServiceEnum;
 import co.com.avc.cornerconn.models.Key;
 import co.com.avc.cornerconn.models.PaymentMethod;
 import co.com.avc.cornerconn.models.Person;
-import co.com.avc.cornerconn.models.enrollment.EnrollmentRq;
+import co.com.avc.cornerconn.models.request.CornerBodyRq;
 import co.com.avc.models.MessageDto;
 import co.com.avc.models.MessageDtoBatch;
 import co.com.avc.models.MessageDtoDynamo;
@@ -76,7 +76,7 @@ public class RequestMapper {
         return dynamoSpiDto;
     }
 
-    public EnrollmentRq bodyMapper(DynamoSpiDto dynamoSpiDto) {
+    public CornerBodyRq bodyMapper(DynamoSpiDto dynamoSpiDto) {
         try {
 
             if (dynamoSpiDto == null) {
@@ -84,14 +84,17 @@ public class RequestMapper {
                         ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusDesc(), ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusCode());
             }
 
-            EnrollmentRq enrollmentRq = new EnrollmentRq();
+            log.info("DynamoSpiDto CustType: " + dynamoSpiDto.getCustType());
+            log.info("DynamoSpiDto KeyType: " + dynamoSpiDto.getKey().getKeyType());
+            CornerBodyRq enrollmentRq = new CornerBodyRq();
             log.info("bodyMapper ingreso");
-            enrollmentRq.setPerson(getPerson(dynamoSpiDto));
+            enrollmentRq.setPersonRS(getPerson(dynamoSpiDto));
             enrollmentRq.setKey(getKey(dynamoSpiDto));
             enrollmentRq.setPaymentMethod(getPaymentMethod(dynamoSpiDto));
-            enrollmentRq.setDescription("");
+            enrollmentRq.setDescription("Llave Dale");
 
-            log.info("Enrollment RQ: " + Util.object2String(enrollmentRq));
+            log.info("Enrollment RQ Util: " + Util.object2String(enrollmentRq));
+
             return enrollmentRq;
         } catch (Exception e) {
             log.error("Error construyendo el body: ", e);
@@ -102,15 +105,30 @@ public class RequestMapper {
 
     private Person getPerson(DynamoSpiDto dynamoSpiDto) {
         try {
+
             Person person = new Person();
-            person.setFirstName(dynamoSpiDto.getCustInf().getCustFirstName());
-            person.setSecondName(dynamoSpiDto.getCustInf().getCustSecondName());
-            person.setFirstSurName(dynamoSpiDto.getCustInf().getCustFirstLastName());
-            person.setSecondSurName(dynamoSpiDto.getCustInf().getCustSecondLastName());
-            person.setTypePerson(dynamoSpiDto.getCustType());
-            person.setBusinessName("");
-            person.setDocumentType(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType());
-            person.setDocumentNumber(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum());
+            person.setFirstName(dynamoSpiDto.getCustInf().getCustFirstName() != null &&
+                    !dynamoSpiDto.getCustInf().getCustFirstName().isEmpty() ?
+                    dynamoSpiDto.getCustInf().getCustFirstName() : null);
+
+            person.setSecondName(dynamoSpiDto.getCustInf().getCustSecondName() != null &&
+                    !dynamoSpiDto.getCustInf().getCustSecondName().isEmpty() ?
+                    dynamoSpiDto.getCustInf().getCustSecondName() : null);
+            person.setFirstSurName(dynamoSpiDto.getCustInf().getCustFirstLastName() != null &&
+                    !dynamoSpiDto.getCustInf().getCustFirstLastName().isEmpty() ?
+                    dynamoSpiDto.getCustInf().getCustFirstLastName() : null);
+            person.setSecondSurName(dynamoSpiDto.getCustInf().getCustSecondLastName() != null &&
+                    !dynamoSpiDto.getCustInf().getCustSecondLastName().isEmpty() ?
+                    dynamoSpiDto.getCustInf().getCustSecondLastName() : null);
+            person.setTypePerson(dynamoSpiDto.getCustType() != null &&
+                    !dynamoSpiDto.getCustType().isEmpty() ?
+                    dynamoSpiDto.getCustType() : null);
+            person.setDocumentType(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType() != null &&
+                    !dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType().isEmpty() ?
+                    dynamoSpiDto.getCustInf().getCustIdent().getCustIdentType() : null);
+            person.setDocumentNumber(dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum() != null &&
+                    !dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum().isEmpty() ?
+                    dynamoSpiDto.getCustInf().getCustIdent().getCustIdentNum() : null);
 
             return person;
         } catch (Exception e) {
@@ -122,8 +140,12 @@ public class RequestMapper {
     private PaymentMethod getPaymentMethod(DynamoSpiDto dynamoSpiDto) {
         try {
             PaymentMethod paymentMethod = new PaymentMethod();
-            paymentMethod.setTypePaymentAcc(dynamoSpiDto.getAcctInfo().getAcctType());
-            paymentMethod.setAccountNumber(dynamoSpiDto.getAcctInfo().getAcctId());
+            paymentMethod.setTypePaymentAcc(dynamoSpiDto.getAcctInfo().getAcctType() != null &&
+                    !dynamoSpiDto.getAcctInfo().getAcctType().isEmpty() ?
+                    dynamoSpiDto.getAcctInfo().getAcctType() : null);
+            paymentMethod.setAccountNumber(dynamoSpiDto.getAcctInfo().getAcctId() != null &&
+                    !dynamoSpiDto.getAcctInfo().getAcctId().isEmpty() ?
+                    dynamoSpiDto.getAcctInfo().getAcctId() : null);
             return paymentMethod;
         } catch (Exception e) {
             log.error("Error construyendo el body: ", e);
@@ -134,13 +156,16 @@ public class RequestMapper {
     private Key getKey(DynamoSpiDto dynamoSpiDto) {
         try {
             Key key = new Key();
-            key.setKeyType(dynamoSpiDto.getKey().getKeyType());
-            key.setValueKey(dynamoSpiDto.getKey().getKeyId());
+            key.setKeyType(dynamoSpiDto.getKey().getKeyType() != null &&
+                    !dynamoSpiDto.getKey().getKeyType().isEmpty() ?
+                    dynamoSpiDto.getKey().getKeyType() : null);
+            key.setValueKey(dynamoSpiDto.getKey().getKeyId() != null &&
+                    !dynamoSpiDto.getKey().getKeyId().isEmpty() ?
+                    dynamoSpiDto.getKey().getKeyId() : null);
             return key;
         } catch (Exception e) {
             log.error("Error construyendo el body: ", e);
             throw e;
         }
     }
-
 }

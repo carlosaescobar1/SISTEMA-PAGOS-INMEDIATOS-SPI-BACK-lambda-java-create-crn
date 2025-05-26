@@ -10,8 +10,8 @@ import co.com.avc.constants.ConstantsEnum;
 import co.com.avc.constants.ResponseServiceEnum;
 import co.com.avc.constants.ResponseStatusCodeEnum;
 import co.com.avc.cornerconn.models.HttpResponseWrapper;
-import co.com.avc.cornerconn.models.MsgInformationResponse;
-import co.com.avc.cornerconn.models.enrollment.EnrollmentRq;
+import co.com.avc.cornerconn.models.request.CornerBodyRq;
+import co.com.avc.cornerconn.models.response.MsgInformationResponse;
 import co.com.avc.cornerconn.service.enrollment.CornerEnrollmentAccountServiceImpl;
 import co.com.avc.cornerconn.service.enrollment.ICornerEnrollmentAccountService;
 import co.com.avc.entity.DynamoSpiEntity;
@@ -32,7 +32,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+
+
+
+/**
+ * Clase encargada de realizar el consumo a la cámara de Corner
+ * y hacer el respectivo guardado en Dynamo y OpenSearch
+ */
 
 @Slf4j
 @AllArgsConstructor
@@ -69,7 +75,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
      * Clase que contiene los métodos para mapear al objeto de
      * sonda
      */
-    private final IndexBatchMapper indexBatchMapper;
+        private final IndexBatchMapper indexBatchMapper;
 
     /**
      * Consentimiento del parameter store
@@ -106,9 +112,9 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
         log.info("Entra a CornerEnrollService");
         log.info("cornerEnrollmentService es nulo? {}", cornerEnrollmentService == null);
 
-        EnrollmentRq enrollmentRq = requestMapper.bodyMapper(dynamoSpiDto);
+        CornerBodyRq enrollmentRq = requestMapper.bodyMapper(dynamoSpiDto);
 
-        log.info("EnrollmentRq: {}", enrollmentRq.toString());
+        log.info("EnrollmentRq: {}", Util.object2String(enrollmentRq));
 
         String fileName = (messageDto.getMessageDtoBatch() != null ?
                 messageDto.getMessageDtoBatch().getOsIndexBatch().getFileName()
@@ -180,8 +186,6 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
                 throw new ATHException(ResponseServiceEnum.ERROR_TEC_EXCEPTION.getServerStatusCode(),
                         ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusDesc() + conExp.getMessage(),
                         ResponseServiceEnum.ERROR_TEC_EXCEPTION.getStatusCode());
-            } catch (URISyntaxException | InterruptedException e) {
-                throw new RuntimeException(e);
             } finally {
                 timeLineUtil.sendLogRs(dynamoSpiDto, rqId);
             }
@@ -233,7 +237,7 @@ public class CornerEnrollmentTransvServiceImpl implements ICornerEnrollmentTrans
     private void processEnrollmentServiceRs(MsgInformationResponse msgInformationResponse,
                                             int httpStatusCode,
                                             DynamoSpiDto dynamoSpiDto,
-                                            MessageDto messageDto, EnrollmentRq enrollmentRq,
+                                            MessageDto messageDto, CornerBodyRq enrollmentRq,
                                             String consent, String uri,
                                             String fileName, String rqId, String subject
     ) {

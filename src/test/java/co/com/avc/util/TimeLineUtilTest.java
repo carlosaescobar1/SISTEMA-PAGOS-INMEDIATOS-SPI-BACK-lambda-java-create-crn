@@ -8,7 +8,6 @@ import co.com.ath.opensearch.logs.constants.TimeStampEnum;
 import co.com.ath.opensearch.logs.constants.TypeServiceConstants;
 import co.com.ath.opensearch.logs.entity.index_timeline.OSIndexTimeline;
 import co.com.ath.opensearch.logs.service.OpensearchLogService;
-import co.com.avc.cornerconn.models.enrollment.EnrollmentRq;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
